@@ -1,0 +1,279 @@
+// Variables used by Scriptable.
+// These must be at the very top of the file. Do not edit.
+// icon-color: deep-brown; icon-glyph: magic;
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>fvde-aruf-webhook RED ∞</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Creepster&display=swap');
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Orbitron', sans-serif;
+    background: linear-gradient(-45deg, #1a0000, #330000, #660000, #990000);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    color: #ff2222;
+    min-height: 100vh;
+    padding: 15px 20px;
+  }
+
+  @keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  h1 {
+    text-align: center;
+    font-family: 'Creepster', cursive;
+    font-size: 3rem;
+    margin: 20px 0 30px;
+    color: #ff0000;
+    text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000, 0 0 60px #ff0000;
+    animation: neonGlow 1.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes neonGlow {
+    from { text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000; }
+    to   { text-shadow: 0 0 30px #ff0000, 0 0 60px #ff0000, 0 0 100px #ff0000; }
+  }
+
+  .container {
+    max-width: 700px;
+    margin: 0 auto;
+    background: rgba(0,0,0,0.75);
+    border: 3px solid #ff0000;
+    border-radius: 20px;
+    padding: 30px 25px;
+    box-shadow: 0 0 50px rgba(255,0,0,0.6);
+    backdrop-filter: blur(8px);
+  }
+
+  label {
+    display: block;
+    margin: 20px 0 8px;
+    font-size: 1.2rem;
+    color: #ff5555;
+    text-shadow: 0 0 5px #ff0000;
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 16px;
+    background: rgba(20,0,0,0.9);
+    border: 2px solid #ff3333;
+    border-radius: 12px;
+    color: #ffdddd;
+    font-size: 1.1rem;
+    transition: all 0.3s;
+  }
+
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: #ff0000;
+    box-shadow: 0 0 20px #ff0000;
+  }
+
+  .button-group {
+    display: flex;
+    gap: 15px;
+    margin: 30px 0 20px;
+  }
+
+  button {
+    flex: 1;
+    padding: 18px;
+    font-size: 1.4rem;
+    font-weight: 900;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.4s;
+    text-shadow: 0 0 8px #000;
+  }
+
+  #startBtn {
+    background: linear-gradient(135deg, #ff0000, #cc0000, #990000);
+    color: white;
+    box-shadow: 0 0 25px #ff0000;
+  }
+
+  #startBtn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 50px #ff0000;
+  }
+
+  #startBtn:active {
+    transform: scale(0.98);
+  }
+
+  #stopBtn {
+    background: linear-gradient(135deg, #444444, #222222);
+    color: #ff6666;
+    border: 3px solid #ff3333;
+    box-shadow: 0 0 15px #ff3333;
+  }
+
+  #stopBtn:hover {
+    background: linear-gradient(135deg, #ff3333, #cc0000);
+    color: white;
+    transform: scale(1.08);
+    box-shadow: 0 0 40px #ff0000;
+  }
+
+  #status {
+    margin-top: 25px;
+    padding: 20px;
+    background: rgba(0,0,0,0.7);
+    border: 2px solid #ff3333;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    min-height: 80px;
+    color: #ffdddd;
+    box-shadow: inset 0 0 20px rgba(255,0,0,0.3);
+  }
+
+  #progress {
+    margin-top: 15px;
+    height: 12px;
+    background: #200000;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: inset 0 0 10px #000;
+  }
+
+  #progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ff0000, #ff6666, #ff0000);
+    background-size: 200% 100%;
+    animation: progressAnim 3s linear infinite;
+  }
+
+  @keyframes progressAnim {
+    0% { background-position: 0% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 2.2rem; }
+    .button-group { flex-direction: column; gap: 15px; }
+    button { padding: 20px; font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>fvde-aruf-webhook RED ∞</h1>
+
+  <label>Webhook URL</label>
+  <input type="text" id="webhookUrl" placeholder="https://discord.com/api/webhooks/...">
+
+  <label>送信メッセージ（改行で複数登録・順番にループ）</label>
+  <textarea id="messages" rows="8" placeholder="@everyone 荒らし開始！！\nhttps://discord.gg/荒らし\nサーバー壊すぞ\n..."></textarea>
+
+  <label>送信間隔（秒・最低0.8秒推奨）</label>
+  <input type="number" id="interval" value="1.2" min="0.8" step="0.1">
+
+  <div class="button-group">
+    <button id="startBtn">無限送信開始</button>
+    <button id="stopBtn">緊急停止</button>
+  </div>
+
+  <div id="status">待機中...</div>
+  <div id="progress"><div id="progress-bar"></div></div>
+</div>
+
+<script>
+const startBtn = document.getElementById('startBtn');
+const stopBtn = document.getElementById('stopBtn');
+const status = document.getElementById('status');
+const progressBar = document.getElementById('progress-bar');
+
+let intervalId = null;
+let sentCount = 0;
+let currentIndex = 0;
+let isRunning = false;
+
+function updateStatus(text, color = '#ffdddd') {
+  status.textContent = text;
+  status.style.color = color;
+  status.classList.add('pulse');
+  setTimeout(() => status.classList.remove('pulse'), 3000);
+}
+
+function updateProgress() {
+  // 無限なので進捗バーはループアニメーションで表現
+  progressBar.style.width = '100%';
+}
+
+startBtn.onclick = () => {
+  if (isRunning) return;
+
+  const url = document.getElementById('webhookUrl').value.trim();
+  const messagesText = document.getElementById('messages').value.trim();
+  let intervalSec = parseFloat(document.getElementById('interval').value);
+
+  if (!url) return alert("Webhook URLを入力してください");
+  if (!messagesText) return alert("メッセージを入力してください");
+
+  const messages = messagesText.split(/\r?\n/).filter(m => m.trim() !== "");
+
+  if (intervalSec < 0.8) intervalSec = 0.8;
+  intervalSec *= 1000;
+
+  sentCount = 0;
+  currentIndex = 0;
+  isRunning = true;
+  startBtn.disabled = true;
+  startBtn.textContent = "無限送信中...";
+  stopBtn.disabled = false;
+  updateStatus("無限送信開始！（停止ボタンで中断）", "#ff0000");
+  updateProgress();
+
+  intervalId = setInterval(() => {
+    if (!isRunning) return;
+
+    const message = messages[currentIndex];
+
+    fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content: message })
+    })
+    .then(res => {
+      sentCount++;
+      currentIndex = (currentIndex + 1) % messages.length;
+      updateStatus(`送信中... (${sentCount}回完了)`, "#00ff00");
+    })
+    .catch(err => {
+      updateStatus(`送信失敗（ネットワークエラー） - ${sentCount}回`, "#ff4444");
+      console.error(err);
+    });
+  }, intervalSec);
+};
+
+stopBtn.onclick = () => {
+  if (intervalId) clearInterval(intervalId);
+  isRunning = false;
+  startBtn.disabled = false;
+  startBtn.textContent = "無限送信開始";
+  stopBtn.disabled = true;
+  updateStatus(`緊急停止！ (${sentCount}回送信済み)`, "#ff8800");
+  progressBar.style.width = '0%';
+};
+</script>
+</body>
+</html>
